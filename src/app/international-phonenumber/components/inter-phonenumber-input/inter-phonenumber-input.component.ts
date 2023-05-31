@@ -12,7 +12,7 @@ interface Country {
 @Component({
   selector: 'app-inter-phonenumber-input',
   templateUrl: './inter-phonenumber-input.component.html',
-  styleUrls: ['./inter-phonenumber-input.component.css']
+  styleUrls: ['./inter-phonenumber-input.component.scss']
 })
 export class InterPhonenumberInputComponent implements OnInit, OnChanges {
   public internalFormControl = new FormControl<any>('', { validators: Validators.required });

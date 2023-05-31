@@ -7,4 +7,5 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'phonenumber-input';
+  phone: string = '+49013'
 }
