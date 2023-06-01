@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
+import { phoneNumberValidator } from '../../validators/phone-number.validator';
 import * as lpn from 'google-libphonenumber';
 
 interface Country {
@@ -15,9 +16,10 @@ interface Country {
   styleUrls: ['./inter-phonenumber-input.component.scss']
 })
 export class InterPhonenumberInputComponent implements OnInit, OnChanges {
-  public internalFormControl = new FormControl<any>('', { validators: Validators.required });
   public phoneNumberCountry: Country | null = null;
   public selectedCountry: Country | null = null;
+  public internalFormControl = new FormControl<any>('', { validators: [] });
+
 
   @Output() valid: EventEmitter<boolean> = new EventEmitter();
   // eslint-disable-next-line @angular-eslint/no-output-native
@@ -66,7 +68,6 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
 
   selectedIndex = 0;
 
-
   ngOnInit(): void {
     this.internalFormControl.valueChanges.subscribe((event) => {
       if (this.internalFormControl) {
@@ -96,6 +97,7 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
 
     this.detectPhoneNumberCountry(this.internalFormControl.value);
     this.updateSelectedCountry();
+    this.initializeValidator();
   }
 
   ngOnChanges(): void {
@@ -203,5 +205,14 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
       console.log(e)
     }
     return number!;
+  }
+
+  private initializeValidator(): void {
+    const selectedCountryCode = this.phoneNumberCountry?.code;
+    if (selectedCountryCode) {
+      const validatorFns = [Validators.required, phoneNumberValidator(selectedCountryCode)];
+      this.internalFormControl.setValidators(validatorFns);
+    }
+    this.internalFormControl.updateValueAndValidity();
   }
 }

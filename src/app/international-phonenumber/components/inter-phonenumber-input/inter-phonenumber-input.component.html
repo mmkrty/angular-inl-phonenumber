@@ -6,6 +6,7 @@
         </option>
       </select>
       <span> {{phoneNumberCountry?.dial_code}} </span>
+      <span> {{selectedCountry?.dial_code}} </span>
       <input type="tel" [formControl]="internalFormControl"  (ngModelChange)="onPhoneNumberChange()" [maxLength]="18" (focusout)="trackBlur()">
 </div>
 <div
