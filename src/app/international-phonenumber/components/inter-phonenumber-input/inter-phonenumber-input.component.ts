@@ -102,6 +102,7 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
 
   ngOnChanges(): void {
     if (this.inputNgModel !== null && this.inputNgModel !== this.internalFormControl.value?.e164Number) {
+      console.log('ngOnChanges')
       this.setPhonenumber(this.inputNgModel?.toString());
     }
   }
@@ -132,6 +133,7 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
   onPhoneNumberChange(): void {
     const phoneNumber = this.internalFormControl.value;
     const selectedCountryCode = this.phonenumberCountry?.code;
+    console.log(selectedCountryCode)
 
     if (!phoneNumber || !selectedCountryCode) {
       return;
@@ -157,7 +159,6 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
 
     this.countries.forEach((country) => {
       if (phoneNumber.startsWith(country.dial_code)) {
-        console.log(country)
         this.phonenumberCountry = country;
       }
     })
