@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
 import { InternationalPhonenumberModule } from './international-phonenumber/international-phonenumber.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -10,7 +11,8 @@ import { InternationalPhonenumberModule } from './international-phonenumber/inte
   ],
   imports: [
     BrowserModule,
-    InternationalPhonenumberModule
+    InternationalPhonenumberModule,
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent]

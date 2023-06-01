@@ -1,11 +1,11 @@
 <div>
 <div>
-    <select [(ngModel)]="selectedIndex" (change)="onCountrySelectionChange()">
-        <option *ngFor="let country of countries; let i = index" [value]="i" [selected]="country === selectedCountry">
+      <select [(ngModel)]="selectedIndex" (change)="onCountrySelectionChange()">
+        <option *ngFor="let country of countries; let i = index" [value]="i" [selected]="country.code === phoneNumberCountry?.code">
           {{ country.emoji }} {{ country.name }} ({{ country.dial_code }})
         </option>
       </select>
-      <span> {{selectedCountry?.dial_code}} </span>
+      <span> {{phoneNumberCountry?.dial_code}} </span>
       <input type="tel" [formControl]="internalFormControl"  (ngModelChange)="onPhoneNumberChange()" [maxLength]="18" (focusout)="trackBlur()">
 </div>
 <div
