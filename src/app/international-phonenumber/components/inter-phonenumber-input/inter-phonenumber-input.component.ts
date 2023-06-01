@@ -16,9 +16,9 @@ interface Country {
   styleUrls: ['./inter-phonenumber-input.component.scss']
 })
 export class InterPhonenumberInputComponent implements OnInit, OnChanges {
+  public internalFormControl = new FormControl<any>('', { validators: [] });
   public phoneNumberCountry: Country | null = null;
   public selectedCountry: Country | null = null;
-  public internalFormControl = new FormControl<any>('', { validators: [] });
 
 
   @Output() valid: EventEmitter<boolean> = new EventEmitter();
@@ -75,19 +75,20 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
 
         this.detectPhoneNumberCountry(event)
 
-        let valueToSet = '';
-        if (event?.e164Number) {
-          valueToSet = event?.e164Number;
-        } else if (event?.number) {
-          valueToSet = event?.number;
-        }
-        else if (typeof event === 'string') {
-          valueToSet = event;
-        }
+        let valueToSet = event
+        // let valueToSet = '';
+        // if (event?.e164Number) {
+        //   valueToSet = event?.e164Number;
+        // } else if (event?.number) {
+        //   valueToSet = event?.number;
+        // }
+        // else if (typeof event === 'string') {
+        //   valueToSet = event;
+        // }
 
-        if (event?.number?.includes('+')) {
-          this.internalFormControl.setValue(this.internalFormControl.value.nationalNumber);
-        }
+        // if (event?.number?.includes('+')) {
+        //   this.internalFormControl.setValue(this.internalFormControl.value.nationalNumber);
+        // }
 
         if (this.inputNgModel !== null) {
           this.inputNgModelChange.emit(valueToSet);
@@ -113,11 +114,6 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
     this.internalFormControl.setValue(phonenumber);
   }
 
-  onCountrySelectionChange(): void {
-    this.selectedCountry = this.countries[this.selectedIndex];
-    this.setPhonenumber(this.parsePhoneNumber(this.internalFormControl.value));
-  }
-
   parsePhoneNumber(phoneNumber: string): string {
     if (!this.selectedCountry) {
       return phoneNumber;
@@ -125,6 +121,11 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
     const existingDialCode = this.phoneNumberCountry!.dial_code;
     const cleanedPhoneNumber = phoneNumber.replace(existingDialCode, '');
     return this.selectedCountry.dial_code + cleanedPhoneNumber;
+  }
+
+  onCountrySelectionChange(): void {
+    this.selectedCountry = this.countries[this.selectedIndex];
+    this.setPhonenumber(this.parsePhoneNumber(this.internalFormControl.value));
   }
 
   public trackBlur(): void {
