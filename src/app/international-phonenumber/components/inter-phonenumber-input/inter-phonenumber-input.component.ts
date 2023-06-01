@@ -16,7 +16,8 @@ interface Country {
 })
 export class InterPhonenumberInputComponent implements OnInit, OnChanges {
   public internalFormControl = new FormControl<any>('', { validators: Validators.required });
-  public selectedCountry!: Country;
+  public phonenumberCountry: Country | null = null;
+  public selectedCountry: Country | null = null;
 
   @Output() valid: EventEmitter<boolean> = new EventEmitter();
   // eslint-disable-next-line @angular-eslint/no-output-native
@@ -70,18 +71,23 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
     this.internalFormControl.valueChanges.subscribe((event) => {
       if (this.internalFormControl) {
         this.valid.emit(this.internalFormControl.valid);
+        this.detectPhoneNumberCountry(event)
 
         let valueToSet = '';
         if (event?.e164Number) {
+          console.log('e164')
           valueToSet = event?.e164Number;
         } else if (event?.number) {
+          console.log('number')
           valueToSet = event?.number;
         }
         else if (typeof event === 'string') {
+          console.log('string')
           valueToSet = event;
         }
 
         if (event?.number?.includes('+')) {
+          console.log('includes+')
           this.internalFormControl.setValue(this.internalFormControl.value.nationalNumber);
         }
 
@@ -90,6 +96,8 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
         }
       }
     });
+
+    this.detectPhoneNumberCountry(this.internalFormControl.value);
   }
 
   ngOnChanges(): void {
@@ -99,6 +107,7 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
   }
 
   setPhonenumber(phonenumber: string): void {
+    console.log("setPhonenumber triggered")
     this.internalFormControl.setValue(phonenumber);
   }
 
@@ -111,7 +120,7 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
     if (!this.selectedCountry) {
       return phoneNumber;
     }
-    const existingDialCode = this.selectedCountry.dial_code;
+    const existingDialCode = this.phonenumberCountry!.dial_code;
     const cleanedPhoneNumber = phoneNumber.replace(existingDialCode, '');
     return this.selectedCountry.dial_code + cleanedPhoneNumber;
   }
@@ -122,7 +131,7 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
 
   onPhoneNumberChange(): void {
     const phoneNumber = this.internalFormControl.value;
-    const selectedCountryCode = this.selectedCountry?.code;
+    const selectedCountryCode = this.phonenumberCountry?.code;
 
     if (!phoneNumber || !selectedCountryCode) {
       return;
@@ -133,6 +142,7 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
 
     if (isValid) {
       // Emit the valid phone number
+      console.log('is Valid', formattedPhoneNumber)
       this.inputNgModelChange.emit(formattedPhoneNumber);
     } else {
       // Emit null for an invalid phone number
@@ -140,6 +150,21 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
     }
 
     this.valid.emit(isValid);
+  }
+
+  private detectPhoneNumberCountry(phoneNumber: string): void {
+    if (!phoneNumber) return;
+
+    this.countries.forEach((country) => {
+      if (phoneNumber.startsWith(country.dial_code)) {
+        console.log(country)
+        this.phonenumberCountry = country;
+      }
+    })
+  }
+
+  private selectedCountryCode(): string | undefined {
+    return this.selectedCountry?.dial_code
   }
 
   private formatPhoneNumber(phoneNumber: string, countryCode: string): string {
