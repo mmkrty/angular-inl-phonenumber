@@ -95,26 +95,16 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
 
   onPhoneNumberChange(): void {
     const phoneNumber = this.internalFormControl.value;
-    const selectedCountryCode = this.phoneNumberCountry?.code;
-    console.log(selectedCountryCode)
+    const currentPhoneCountryCode = this.phoneNumberCountry?.code;
+    console.log(currentPhoneCountryCode)
 
-    if (!phoneNumber || !selectedCountryCode) {
+    if (!phoneNumber || !currentPhoneCountryCode) {
       return;
     }
 
-    const formattedPhoneNumber = this.formatPhoneNumber(phoneNumber, selectedCountryCode);
-    const isValid = this.isValidPhoneNumber(formattedPhoneNumber, selectedCountryCode);
-
-    if (isValid) {
-      // Emit the valid phone number
-      console.log('is Valid', formattedPhoneNumber)
-      this.inputNgModelChange.emit(formattedPhoneNumber);
-    } else {
-      // Emit null for an invalid phone number
-      this.inputNgModelChange.emit(undefined);
-    }
-
-    this.valid.emit(isValid);
+    const formattedPhoneNumber = this.formatPhoneNumber(phoneNumber, currentPhoneCountryCode);
+    console.log('Valid phone number', formattedPhoneNumber);
+    this.inputNgModelChange.emit(formattedPhoneNumber);
   }
 
   private detectPhoneNumberCountry(phoneNumber: string): void {
