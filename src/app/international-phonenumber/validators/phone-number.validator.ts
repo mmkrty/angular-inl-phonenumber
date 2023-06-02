@@ -8,14 +8,14 @@ export function phoneNumberValidator(countryCode: any): ValidatorFn {
 
 
         const phoneNumber = control.value;
-        const selectedCountryCode = countryCode;
+        const phoneCountryCode = countryCode;
 
-        if (!phoneNumber || !selectedCountryCode) {
+        if (!phoneNumber || !phoneCountryCode) {
             return null; // Return null for valid case
         }
 
-        const formattedPhoneNumber = formatPhoneNumber(phoneNumber, selectedCountryCode);
-        const isValid = isValidPhoneNumber(formattedPhoneNumber, selectedCountryCode);
+        const formattedPhoneNumber = formatPhoneNumber(phoneNumber, phoneCountryCode);
+        const isValid = isValidPhoneNumber(formattedPhoneNumber, phoneCountryCode);
 
         console.log('Validator', isValid)
         if (!isValid) {
@@ -26,7 +26,7 @@ export function phoneNumberValidator(countryCode: any): ValidatorFn {
     };
 }
 
-function formatPhoneNumber(phoneNumber: string, countryCode: string): string {
+export function formatPhoneNumber(phoneNumber: string, countryCode: string): string {
     try {
         const parsedNumber = getParsedNumber(phoneNumber, countryCode);
         return phoneUtil.format(parsedNumber, lpn.PhoneNumberFormat.E164);

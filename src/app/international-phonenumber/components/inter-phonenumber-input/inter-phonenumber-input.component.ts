@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { phoneNumberValidator } from '../../validators/phone-number.validator';
+import { phoneNumberValidator, formatPhoneNumber } from '../../validators/phone-number.validator';
 import { Countries } from '../../data/countries';
 import * as lpn from 'google-libphonenumber';
 
@@ -102,8 +102,8 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
       return;
     }
 
-    const formattedPhoneNumber = this.formatPhoneNumber(phoneNumber, currentPhoneCountryCode);
-    console.log('Valid phone number', formattedPhoneNumber);
+    const formattedPhoneNumber = formatPhoneNumber(phoneNumber, currentPhoneCountryCode);
+    console.log('Formatted phone number', formattedPhoneNumber);
     this.inputNgModelChange.emit(formattedPhoneNumber);
   }
 
@@ -135,39 +135,6 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
     };
     const foundCountry = this.countries.find(country => country.code === this.defaultCountryCode);
     return foundCountry ? foundCountry : defaultCountry;
-  }
-
-  private formatPhoneNumber(phoneNumber: string, countryCode: string): string {
-    try {
-      const parsedNumber = this.getParsedNumber(phoneNumber, countryCode);
-      return this.phoneUtil.format(parsedNumber, lpn.PhoneNumberFormat.E164);
-    } catch (e) {
-      console.log(e);
-      return phoneNumber;
-    }
-  }
-
-  private isValidPhoneNumber(phoneNumber: string, countryCode: string): boolean {
-    try {
-      const parsedNumber = this.getParsedNumber(phoneNumber, countryCode);
-      return this.phoneUtil.isValidNumber(parsedNumber);
-    } catch (e) {
-      console.log(e);
-      return false;
-    }
-  }
-
-  private getParsedNumber(
-    phoneNumber: string,
-    countryCode: string
-  ): lpn.PhoneNumber {
-    let number: lpn.PhoneNumber | undefined = undefined;
-    try {
-      number = this.phoneUtil.parse(phoneNumber, countryCode.toUpperCase());
-    } catch (e) {
-      console.log(e)
-    }
-    return number!;
   }
 
   private initializeValidator(): void {
