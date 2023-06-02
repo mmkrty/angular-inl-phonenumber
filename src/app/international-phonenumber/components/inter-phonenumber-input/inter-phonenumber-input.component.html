@@ -1,6 +1,6 @@
 <div>
 <div>
-      <select [(ngModel)]="selectedIndex" (change)="onCountrySelectionChange()">
+      <select [(ngModel)]="selectedCountryIndex" (change)="onCountrySelectionChange()">
         <option *ngFor="let country of countries; let i = index" [value]="i" [selected]="country.code === phoneNumberCountry?.code">
           {{ country.emoji }} {{ country.name }} ({{ country.dial_code }})
         </option>
