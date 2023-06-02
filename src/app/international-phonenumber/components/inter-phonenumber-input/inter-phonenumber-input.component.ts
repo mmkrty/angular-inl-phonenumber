@@ -20,7 +20,6 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
   @Output() valid: EventEmitter<boolean> = new EventEmitter();
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() blur: EventEmitter<boolean> = new EventEmitter();
-
   @Input() inputNgModel: string | null = null;
   @Output() inputNgModelChange = new EventEmitter<string>();
 
