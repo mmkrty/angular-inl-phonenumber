@@ -1,12 +1,13 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { phoneNumberValidator } from '../../validators/phone-number.validator';
+import { Countries } from '../../data/countries';
 import * as lpn from 'google-libphonenumber';
 
 interface Country {
   name: string;
   dial_code: string;
-  emoji: string;
+  emoji?: string;
   code: string;
 }
 
@@ -16,11 +17,6 @@ interface Country {
   styleUrls: ['./inter-phonenumber-input.component.scss']
 })
 export class InterPhonenumberInputComponent implements OnInit, OnChanges {
-  public internalFormControl = new FormControl<any>('', { validators: [] });
-  public phoneNumberCountry: Country | null = null;
-  public selectedCountry: Country | null = null;
-
-
   @Output() valid: EventEmitter<boolean> = new EventEmitter();
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() blur: EventEmitter<boolean> = new EventEmitter();
@@ -28,43 +24,51 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
   @Input() inputNgModel: string | null = null;
   @Output() inputNgModelChange = new EventEmitter<string>();
 
+  @Input() defaultCountryCode: string = 'DE';
   @Input() formControlValidation = true;
   @Input() showValidationFeedback = true;
 
+  public internalFormControl = new FormControl<any>('', { validators: [] });
+  public phoneNumberCountry: Country | null = null;
+  public selectedCountry: Country | null = null;
+  countries: Country[] = Countries;
+
+  defaultCountry: Country = this.setDefaultCountry(this.defaultCountryCode);
   phoneUtil: any = lpn.PhoneNumberUtil.getInstance();
 
-  countries: Country[] = [
-    {
-      'name': 'Germany',
-      'dial_code': '+49',
-      'emoji': '🇩🇪',
-      'code': 'DE'
-    },
-    {
-      'name': 'Austria',
-      'dial_code': '+43',
-      'emoji': '🇦🇹',
-      'code': 'AT'
-    },
-    {
-      'name': 'Switzerland',
-      'dial_code': '+41',
-      'emoji': '🇨🇭',
-      'code': 'CH'
-    },
-    {
-      'name': 'Poland',
-      'dial_code': '+48',
-      'emoji': '🇵🇱',
-      'code': 'PL'
-    },
-    {
-      'name': 'Turkey',
-      'dial_code': '+90',
-      'emoji': '🇹🇷',
-      'code': 'TR'
-    },
-  ]
+
+  // [
+  //   {
+  //     'name': 'Germany',
+  //     'dial_code': '+49',
+  //     'emoji': '🇩🇪',
+  //     'code': 'DE'
+  //   },
+  //   {
+  //     'name': 'Austria',
+  //     'dial_code': '+43',
+  //     'emoji': '🇦🇹',
+  //     'code': 'AT'
+  //   },
+  //   {
+  //     'name': 'Switzerland',
+  //     'dial_code': '+41',
+  //     'emoji': '🇨🇭',
+  //     'code': 'CH'
+  //   },
+  //   {
+  //     'name': 'Poland',
+  //     'dial_code': '+48',
+  //     'emoji': '🇵🇱',
+  //     'code': 'PL'
+  //   },
+  //   {
+  //     'name': 'Turkey',
+  //     'dial_code': '+90',
+  //     'emoji': '🇹🇷',
+  //     'code': 'TR'
+  //   },
+  // ]
 
   selectedIndex = 0;
 
@@ -93,6 +97,10 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
         if (this.inputNgModel !== null) {
           this.inputNgModelChange.emit(valueToSet);
         }
+
+        if (!event && this.phoneNumberCountry) {
+          this.internalFormControl.setValue(this.phoneNumberCountry.dial_code);
+        }
       }
     });
 
@@ -106,7 +114,7 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
       console.log('ngOnChanges')
       this.setPhonenumber(this.inputNgModel?.toString());
     }
-    this.detectPhoneNumberCountry(this.internalFormControl.value);
+    // this.detectPhoneNumberCountry(this.internalFormControl.value);
   }
 
   setPhonenumber(phonenumber: string): void {
@@ -157,7 +165,7 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
   }
 
   private detectPhoneNumberCountry(phoneNumber: string): void {
-    if (!phoneNumber) return;
+    if (!phoneNumber) { this.phoneNumberCountry = this.defaultCountry };
 
     this.countries.forEach((country) => {
       if (phoneNumber.startsWith(country.dial_code)) {
@@ -173,6 +181,17 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
         (country) => country.code === this.phoneNumberCountry!.code
       );
     }
+  }
+
+  private setDefaultCountry(countryCode: string = this.defaultCountryCode): Country {
+    const defaultCountry = {
+      "name": "Germany",
+      "dial_code": "+49",
+      "code": "DE",
+      "emoji": "🇩🇪"
+    };
+    const foundCountry = this.countries.find(country => country.code === countryCode);
+    return foundCountry ? foundCountry : defaultCountry;
   }
 
   private formatPhoneNumber(phoneNumber: string, countryCode: string): string {
