@@ -45,10 +45,8 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
 
         this.detectPhoneNumberCountry(event)
 
-        let valueToSet = event
-
         if (this.inputNgModel !== null) {
-          this.inputNgModelChange.emit(valueToSet);
+          this.inputNgModelChange.emit(event);
         }
 
         if (!event && this.phoneNumberCountry) {

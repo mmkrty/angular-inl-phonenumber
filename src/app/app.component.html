@@ -1,1 +1,4 @@
-<app-inter-phonenumber-input [(inputNgModel)]="phone" [formControlValidation]="false"></app-inter-phonenumber-input>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <app-inter-phonenumber-input [(inputNgModel)]="form.value.phone" [formControlValidation]="false" formControlName="phone"></app-inter-phonenumber-input>
+    <button type="submit">Submit</button>
+  </form>
