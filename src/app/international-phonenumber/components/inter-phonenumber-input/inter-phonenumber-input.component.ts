@@ -33,42 +33,8 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
   public selectedCountry: Country | null = null;
   countries: Country[] = Countries;
 
-  defaultCountry: Country = this.setDefaultCountry(this.defaultCountryCode);
+  defaultCountry: Country = this.setDefaultCountry();
   phoneUtil: any = lpn.PhoneNumberUtil.getInstance();
-
-
-  // [
-  //   {
-  //     'name': 'Germany',
-  //     'dial_code': '+49',
-  //     'emoji': '🇩🇪',
-  //     'code': 'DE'
-  //   },
-  //   {
-  //     'name': 'Austria',
-  //     'dial_code': '+43',
-  //     'emoji': '🇦🇹',
-  //     'code': 'AT'
-  //   },
-  //   {
-  //     'name': 'Switzerland',
-  //     'dial_code': '+41',
-  //     'emoji': '🇨🇭',
-  //     'code': 'CH'
-  //   },
-  //   {
-  //     'name': 'Poland',
-  //     'dial_code': '+48',
-  //     'emoji': '🇵🇱',
-  //     'code': 'PL'
-  //   },
-  //   {
-  //     'name': 'Turkey',
-  //     'dial_code': '+90',
-  //     'emoji': '🇹🇷',
-  //     'code': 'TR'
-  //   },
-  // ]
 
   selectedIndex = 0;
 
@@ -80,19 +46,6 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
         this.detectPhoneNumberCountry(event)
 
         let valueToSet = event
-        // let valueToSet = '';
-        // if (event?.e164Number) {
-        //   valueToSet = event?.e164Number;
-        // } else if (event?.number) {
-        //   valueToSet = event?.number;
-        // }
-        // else if (typeof event === 'string') {
-        //   valueToSet = event;
-        // }
-
-        // if (event?.number?.includes('+')) {
-        //   this.internalFormControl.setValue(this.internalFormControl.value.nationalNumber);
-        // }
 
         if (this.inputNgModel !== null) {
           this.inputNgModelChange.emit(valueToSet);
@@ -183,14 +136,14 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
     }
   }
 
-  private setDefaultCountry(countryCode: string = this.defaultCountryCode): Country {
+  private setDefaultCountry(): Country {
     const defaultCountry = {
       "name": "Germany",
       "dial_code": "+49",
       "code": "DE",
       "emoji": "🇩🇪"
     };
-    const foundCountry = this.countries.find(country => country.code === countryCode);
+    const foundCountry = this.countries.find(country => country.code === this.defaultCountryCode);
     return foundCountry ? foundCountry : defaultCountry;
   }
 
