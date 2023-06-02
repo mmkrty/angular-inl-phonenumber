@@ -36,7 +36,7 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
   defaultCountry: Country = this.setDefaultCountry();
   phoneUtil: any = lpn.PhoneNumberUtil.getInstance();
 
-  selectedIndex = 0;
+  selectedCountryIndex = 0;
 
   ngOnInit(): void {
     this.internalFormControl.valueChanges.subscribe((event) => {
@@ -85,7 +85,7 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
   }
 
   onCountrySelectionChange(): void {
-    this.selectedCountry = this.countries[this.selectedIndex];
+    this.selectedCountry = this.countries[this.selectedCountryIndex];
     this.setPhonenumber(this.parsePhoneNumber(this.internalFormControl.value));
   }
 
@@ -130,7 +130,7 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
 
   private updateSelectedCountry(): void {
     if (this.phoneNumberCountry) {
-      this.selectedIndex = this.countries.findIndex(
+      this.selectedCountryIndex = this.countries.findIndex(
         (country) => country.code === this.phoneNumberCountry!.code
       );
     }
