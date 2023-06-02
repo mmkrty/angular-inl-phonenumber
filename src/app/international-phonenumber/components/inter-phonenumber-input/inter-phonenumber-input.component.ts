@@ -64,33 +64,18 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
 
   ngOnChanges(): void {
     if (this.inputNgModel !== null && this.inputNgModel !== this.internalFormControl.value?.e164Number) {
-      console.log('ngOnChanges')
       this.setPhonenumber(this.inputNgModel?.toString());
     }
     // this.detectPhoneNumberCountry(this.internalFormControl.value);
   }
 
-  setPhonenumber(phonenumber: string): void {
-    console.log("setPhonenumber triggered")
-    this.internalFormControl.setValue(phonenumber);
-  }
-
-  parsePhoneNumber(phoneNumber: string): string {
-    if (!this.selectedCountry) {
-      return phoneNumber;
-    }
-    const existingDialCode = this.phoneNumberCountry!.dial_code;
-    const cleanedPhoneNumber = phoneNumber.replace(existingDialCode, '');
-    return this.selectedCountry.dial_code + cleanedPhoneNumber;
+  trackBlur(): void {
+    this.blur.emit(this.internalFormControl?.valid);
   }
 
   onCountrySelectionChange(): void {
     this.selectedCountry = this.countries[this.selectedCountryIndex];
     this.setPhonenumber(this.parsePhoneNumber(this.internalFormControl.value));
-  }
-
-  public trackBlur(): void {
-    this.blur.emit(this.internalFormControl?.valid);
   }
 
   onPhoneNumberChange(): void {
@@ -117,13 +102,25 @@ export class InterPhonenumberInputComponent implements OnInit, OnChanges {
     })
   }
 
-
   private updateSelectedCountry(): void {
     if (this.phoneNumberCountry) {
       this.selectedCountryIndex = this.countries.findIndex(
         (country) => country.code === this.phoneNumberCountry!.code
       );
     }
+  }
+
+  private setPhonenumber(phonenumber: string): void {
+    this.internalFormControl.setValue(phonenumber);
+  }
+
+  private parsePhoneNumber(phoneNumber: string): string {
+    if (!this.selectedCountry) {
+      return phoneNumber;
+    }
+    const existingDialCode = this.phoneNumberCountry!.dial_code;
+    const cleanedPhoneNumber = phoneNumber.replace(existingDialCode, '');
+    return this.selectedCountry.dial_code + cleanedPhoneNumber;
   }
 
   private setDefaultCountry(): Country {
